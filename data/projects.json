@@ -1,0 +1,57 @@
+[
+  {
+    "id": "proj-001",
+    "name": "Security Upgrade 2026",
+    "client": "ABC Industries",
+    "status": "in_progress",
+    "start_date": "2026-05-15",
+    "end_date": "2026-07-31",
+    "budget": 250000,
+    "activities": ["act-001", "act-006"],
+    "description": "Complete CCTV and access control system overhaul for ABC Industries main facility."
+  },
+  {
+    "id": "proj-002",
+    "name": "Network Overhaul",
+    "client": "XYZ Corp",
+    "status": "in_progress",
+    "start_date": "2026-05-20",
+    "end_date": "2026-08-15",
+    "budget": 320000,
+    "activities": ["act-002", "act-007"],
+    "description": "Full network infrastructure upgrade across 3 floors. New switching fabric, WiFi 6, and SD-WAN."
+  },
+  {
+    "id": "proj-003",
+    "name": "Server Infrastructure 2026",
+    "client": "Tech Hub",
+    "status": "active",
+    "start_date": "2026-06-01",
+    "end_date": "2026-09-30",
+    "budget": 180000,
+    "activities": ["act-003"],
+    "description": "Server hardware refresh and migration to virtualized infrastructure."
+  },
+  {
+    "id": "proj-004",
+    "name": "Security Hardening 2026",
+    "client": "Metro Bank",
+    "status": "in_progress",
+    "start_date": "2026-06-01",
+    "end_date": "2026-08-31",
+    "budget": 450000,
+    "activities": ["act-005"],
+    "description": "Comprehensive security hardening: firewall upgrade, CCTV expansion, and access control for all branches."
+  },
+  {
+    "id": "proj-005",
+    "name": "IT Infrastructure Setup",
+    "client": "City Office",
+    "status": "in_progress",
+    "start_date": "2026-05-01",
+    "end_date": "2026-07-15",
+    "budget": 195000,
+    "activities": ["act-004"],
+    "description": "New office IT setup: networking, server room, CCTV, and end-user devices."
+  }
+]

@@ -1,0 +1,101 @@
+[
+  {
+    "id": "task-4c7f42a1",
+    "title": "Add 12 Hikvision 4MP IP Cameras to Network Overhaul Phase 2 - XYZ Corp",
+    "client": "XYZ Corp",
+    "project": "Network Overhaul Phase 2",
+    "priority": "high",
+    "status": "completed",
+    "due_date": "2026-06-30",
+    "assigned_to": "Denni Alwin",
+    "description": "Allocate and install 12 new Hikvision 4MP IP Cameras for the network overhaul project."
+  },
+  {
+    "id": "task-001",
+    "title": "Network Overhaul Phase 2 - XYZ Corp",
+    "client": "XYZ Corp",
+    "project": "Network Overhaul Phase 2",
+    "priority": "high",
+    "status": "completed",
+    "due_date": "2026-06-30",
+    "assigned_to": "Denni Alwin",
+    "description": "Replace 3 legacy switches identified in audit. Configure new switches and migrate VLANs."
+  },
+  {
+    "id": "task-002",
+    "title": "Server Migration - Tech Hub",
+    "client": "Tech Hub",
+    "project": "Server Infrastructure 2026",
+    "priority": "high",
+    "status": "completed",
+    "due_date": "2026-07-05",
+    "assigned_to": "Denni Alwin",
+    "description": "Migrate production workloads from old Dell R340 to new hardware. Schedule maintenance window."
+  },
+  {
+    "id": "task-003",
+    "title": "Security Camera Review - Metro Bank",
+    "client": "Metro Bank",
+    "project": "Security Hardening 2026",
+    "priority": "medium",
+    "status": "completed",
+    "due_date": "2026-06-28",
+    "assigned_to": "Denni Alwin",
+    "description": "Review and update camera placement in new branch office. Install 6 additional cameras."
+  },
+  {
+    "id": "task-004",
+    "title": "IT Support Training - Green Retail",
+    "client": "Green Retail",
+    "project": "Office IT Setup",
+    "priority": "low",
+    "status": "completed",
+    "due_date": "2026-07-10",
+    "assigned_to": "Denni Alwin",
+    "description": "Train 5 staff members on basic IT troubleshooting, printer management, and WiFi connectivity."
+  },
+  {
+    "id": "task-005",
+    "title": "Annual Maintenance Contract - ABC Industries",
+    "client": "ABC Industries",
+    "project": "Security Upgrade 2026",
+    "priority": "medium",
+    "status": "completed",
+    "due_date": "2026-07-15",
+    "assigned_to": "Denni Alwin",
+    "description": "Annual CCTV system inspection, NVR storage check, cable audit, and camera cleaning."
+  },
+  {
+    "id": "task-006",
+    "title": "Firewall Rule Update - City Office",
+    "client": "City Office",
+    "project": "IT Infrastructure Setup",
+    "priority": "high",
+    "status": "completed",
+    "due_date": "2026-06-25",
+    "assigned_to": "Denni Alwin",
+    "description": "Update firewall ACLs to block newly identified threat IPs. Add new VPN users."
+  },
+  {
+    "id": "task-007",
+    "title": "Cable Documentation - DataCenter Pro",
+    "client": "DataCenter Pro",
+    "project": "DataCenter Cleanup",
+    "priority": "low",
+    "status": "completed",
+    "due_date": "2026-06-10",
+    "assigned_to": "Denni Alwin",
+    "description": "Create full cable documentation report with photos and cable labels for all racks."
+  },
+  {
+    "id": "task-008",
+    "title": "Network Speed Test - Smart Logistics",
+    "client": "Smart Logistics",
+    "project": "Warehouse Connectivity",
+    "priority": "medium",
+    "status": "completed",
+    "due_date": "2026-06-05",
+    "assigned_to": "Denni Alwin",
+    "description": "Post-installation speed and coverage tests for all 6 access points. Verify roaming handoff."
+  }
+]
