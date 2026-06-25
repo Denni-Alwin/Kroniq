@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import uuid
 from datetime import datetime
 from flask import Flask, jsonify, render_template, request, Response, stream_with_context
@@ -46,10 +47,32 @@ def index():
 
 # ── Tool executor (called by the AI when it uses a tool) ─────────────────────
 
+def _word_overlap(a: str, b: str) -> float:
+    wa = set(a.lower().split())
+    wb = set(b.lower().split())
+    if not wa or not wb:
+        return 0.0
+    return len(wa & wb) / max(len(wa), len(wb))
+
+
 def _tool_executor(fn_name: str, args: dict) -> str:
     try:
         if fn_name == "create_task":
             tasks = _load("tasks.json")
+            new_title = args.get("title", "New Task")
+            new_client = args.get("client", "").lower()
+            for t in tasks:
+                if t.get("status") == "completed":
+                    continue
+                score = _word_overlap(new_title, t["title"])
+                if new_client and new_client in t.get("client", "").lower():
+                    score += 0.15
+                if score >= 0.5:
+                    return json.dumps({
+                        "ok": False,
+                        "duplicate": True,
+                        "message": f"Task '{t['title']}' already exists (ID: {t['id']}, status: {t['status']}). Not adding a duplicate.",
+                    })
             new_id = f"task-{str(uuid.uuid4())[:8]}"
             task = {
                 "id": new_id,
@@ -84,6 +107,20 @@ def _tool_executor(fn_name: str, args: dict) -> str:
 
         elif fn_name == "log_activity":
             activities = _load("activities.json")
+            new_activity_name = args.get("activity", "")
+            new_client = args.get("client", "")
+            new_date = args.get("date", datetime.now().strftime("%Y-%m-%d"))
+            for a in activities:
+                same_date = a.get("date", "") == new_date
+                same_client = a.get("client", "").lower() == new_client.lower()
+                if same_date and same_client:
+                    score = _word_overlap(new_activity_name, a.get("activity", ""))
+                    if score >= 0.4:
+                        return json.dumps({
+                            "ok": False,
+                            "duplicate": True,
+                            "message": f"Activity '{a['activity']}' for {a['client']} on {a['date']} already logged (ID: {a['id']}). Not adding a duplicate.",
+                        })
             new_id = f"act-{str(uuid.uuid4())[:8]}"
             activity = {
                 "id": new_id,
@@ -165,16 +202,92 @@ def _tool_executor(fn_name: str, args: dict) -> str:
 
 
 def _build_data_context() -> str:
-    """Compact snapshot of tasks + inventory so the AI knows IDs/SKUs for tool calls."""
+    """Compact snapshot of today's date, tasks + inventory so the AI knows IDs/SKUs for tool calls."""
+    today = datetime.now().strftime("%Y-%m-%d")
     tasks = _load("tasks.json")
     inventory = _load("inventory.json")
-    ctx = "\n\n[System Data — use exact IDs/SKUs when calling update tools]\nTasks:\n"
+    ctx = f"\n\n[System Data — use exact IDs/SKUs when calling update tools]\nToday's date: {today}\nTasks:\n"
     for t in tasks[:15]:
         ctx += f"  {t['id']}: {t['title']} [{t['status']}] - {t.get('client', '')}\n"
     ctx += "Inventory:\n"
     for item in inventory[:15]:
         ctx += f"  SKU={item['sku']}: {item['name']} stock={item['stock']}{item.get('unit','pcs')} [{item['status']}]\n"
     return ctx
+
+
+# ── Inventory message parser ─────────────────────────────────────────────────
+
+_UNIT_MAP = {
+    'coil': 'rolls', 'coils': 'rolls', 'roll': 'rolls',
+    'unit': 'pcs', 'units': 'pcs', 'piece': 'pcs', 'pieces': 'pcs', 'pc': 'pcs',
+    'meter': 'meters', 'metre': 'meters', 'meters': 'meters', 'metres': 'meters',
+    'set': 'sets',
+}
+_SKIP_WORDS = ('we have', 'i have', 'several', 'products', 'inventory', 'following', 'below', 'these')
+_QUESTION_STARTS = ('what', 'how', 'can', 'show', 'list', 'tell', 'find', 'is ', 'are ',
+                    'do ', 'does', 'did', 'which', 'where', 'when', 'why', 'give', 'get')
+
+def _parse_inventory_message(message):
+    """Return list of {name, qty, unit} ONLY for structured inventory listing messages.
+    Requires -> or → separators; rejects questions and regular sentences."""
+    msg = message.strip()
+    # Must have a list separator to qualify
+    if '->' not in msg and '→' not in msg:
+        return []
+    # Questions and normal sentences should go to AI
+    if '?' in msg:
+        return []
+    low = msg.lower()
+    if any(low.startswith(q) for q in _QUESTION_STARTS):
+        return []
+
+    parts = re.split(r'->|→', msg)
+    items = []
+    for part in parts:
+        part = part.strip(' -•*\n')
+        m = re.search(r'^(.+?)\s*[=:]\s*(\d+)\s*([a-zA-Z]+)?', part)
+        if not m:
+            continue
+        name = m.group(1).strip()
+        qty = int(m.group(2))
+        raw_unit = (m.group(3) or 'pcs').lower()
+        unit = _UNIT_MAP.get(raw_unit, raw_unit)
+        if len(name) < 2 or any(s in name.lower() for s in _SKIP_WORDS):
+            continue
+        items.append({'name': name, 'qty': qty, 'unit': unit})
+    return items
+
+
+def _handle_inventory_items(items):
+    """Call tool executor for each parsed inventory item; return list of result strings."""
+    inventory = _load("inventory.json")
+    results = []
+    for item in items:
+        name_lower = item['name'].lower()
+        # Try to find existing item by name — word-overlap match (e.g. "Hikvision camera" matches "Hikvision 4MP IP Camera")
+        def _name_score(existing):
+            words = set(name_lower.split())
+            ex_words = set(existing['name'].lower().split())
+            return len(words & ex_words) / max(len(words), 1)
+        match = max(inventory, key=_name_score, default=None)
+        if match and _name_score(match) < 0.4:
+            match = None
+        if match:
+            res = _tool_executor("update_inventory_stock",
+                                 {"sku": match["sku"], "new_stock": item['qty']})
+        else:
+            # Generate a clean SKU from the name
+            sku = re.sub(r'[^A-Z0-9]', '-', item['name'].upper())[:20].strip('-')
+            res = _tool_executor("add_inventory_item", {
+                "name": item['name'],
+                "sku": sku,
+                "category": "General",
+                "stock": item['qty'],
+                "unit": item['unit'],
+            })
+        results.append(json.loads(res))
+        inventory = _load("inventory.json")  # reload after each write
+    return results
 
 
 # ── AI Chat ──────────────────────────────────────────────────────────────────
@@ -188,11 +301,78 @@ def chat():
     if not message:
         return jsonify({"error": "message required"}), 400
 
+    # Direct inventory parsing — bypass AI tool selection entirely for inventory listings
+    inv_items = _parse_inventory_message(message)
+    if inv_items:
+        def generate_inv():
+            results = _handle_inventory_items(inv_items)
+            ok = [r for r in results if r.get("ok")]
+            fail = [r for r in results if not r.get("ok")]
+            count = len(ok)
+            confirm = f"Done! {count} item{'s' if count != 1 else ''} added to inventory."
+            if fail:
+                confirm += f" ({len(fail)} could not be saved.)"
+            card = {
+                "type": "inventory",
+                "title": "Inventory Updated",
+                "rows": [r.get("message", "") for r in ok],
+                "errors": [r.get("message", "") for r in fail],
+            }
+            yield f"data: {json.dumps({'text': confirm})}\n\n"
+            yield f"data: {json.dumps({'card': card})}\n\n"
+            yield f"data: {json.dumps({'refresh': True})}\n\n"
+            yield "data: [DONE]\n\n"
+        return Response(stream_with_context(generate_inv()), mimetype="text/event-stream",
+                        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
     data_ctx = _build_data_context()
 
+    # Track tool calls so we can emit a card after AI executes tools
+    _tool_log = []
+    def _tracked_executor(fn_name, args):
+        result = _tool_executor(fn_name, args)
+        parsed = json.loads(result)
+        _tool_log.append({"fn": fn_name, "args": args, "result": parsed})
+        return result
+
+    _CARD_META = {
+        "create_task":            ("task",      "Task Created"),
+        "update_task_status":     ("task",      "Task Updated"),
+        "log_activity":           ("activity",  "Activity Logged"),
+        "update_inventory_stock": ("inventory", "Stock Updated"),
+        "add_inventory_item":     ("inventory", "Item Added"),
+    }
+
     def generate():
-        for chunk in rag.chat_stream(message, history, tool_executor=_tool_executor, data_context=data_ctx):
+        for chunk in rag.chat_stream(message, history, tool_executor=_tracked_executor, data_context=data_ctx):
             if chunk == REFRESH_SENTINEL:
+                if _tool_log:
+                    ok_logs = [e for e in _tool_log if e["result"].get("ok")]
+                    dup_logs = [e for e in _tool_log if e["result"].get("duplicate")]
+                    if ok_logs:
+                        fns = [e["fn"] for e in ok_logs]
+                        card_type, card_title = _CARD_META.get(fns[0], ("general", "Done"))
+                        if len(set(fns)) > 1:
+                            card_title = "Changes Applied"
+                        card = {
+                            "type": card_type,
+                            "title": card_title,
+                            "rows": [e["result"].get("message", "") for e in ok_logs],
+                            "errors": [e["result"].get("message", "") for e in _tool_log if not e["result"].get("ok")],
+                        }
+                        yield f"data: {json.dumps({'card': card})}\n\n"
+                    elif dup_logs:
+                        fn = dup_logs[0]["fn"]
+                        card_type = "task" if fn in ("create_task", "update_task_status") else "activity"
+                        item_type = "task" if card_type == "task" else "activity"
+                        yield f"data: {json.dumps({'text': f'That {item_type} is already in your records.'})}\n\n"
+                        card = {
+                            "type": card_type,
+                            "title": "Already Exists",
+                            "rows": [],
+                            "errors": [e["result"].get("message", "") for e in dup_logs],
+                        }
+                        yield f"data: {json.dumps({'card': card})}\n\n"
                 yield f"data: {json.dumps({'refresh': True})}\n\n"
             else:
                 yield f"data: {json.dumps({'text': chunk})}\n\n"

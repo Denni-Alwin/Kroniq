@@ -1,287 +1,175 @@
 [
   {
-    "id": "act-c29dbf25",
+    "id": "act-66a1a49c",
     "date": "2026-06-24",
-    "activity": "Annual Maintenance Contract - ABC Industries",
-    "client": "ABC Industries",
-    "project": "ABCIndustries Annual Maintenance",
-    "technician": "Denni Alwin",
-    "items_used": [
-      "UPS-APC-2KVA"
-    ],
-    "description": "Completed the annual maintenance contract for ABC Industries.",
-    "status": "completed",
-    "hours": 15
-  },
-  {
-    "id": "act-fa01db37",
-    "date": "2026-06-24",
-    "activity": "Firewall Rule Update - City Office",
-    "client": "City Office",
-    "project": "CityOffice Security Enhancement",
-    "technician": "Denni Alwin",
-    "items_used": [],
-    "description": "Updated the firewall rules for enhanced security at the city office.",
-    "status": "completed",
-    "hours": 7
-  },
-  {
-    "id": "act-4515f2cb",
-    "date": "2026-06-24",
-    "activity": "Annual Maintenance Contract - ABC Industries",
-    "client": "ABC Industries",
-    "project": "ABCIndustries Annual Maintenance",
-    "technician": "Denni Alwin",
-    "items_used": [
-      "UPS-APC-2KVA"
-    ],
-    "description": "Completed the annual maintenance contract for ABC Industries.",
-    "status": "completed",
-    "hours": 15
-  },
-  {
-    "id": "act-6e7d34d4",
-    "date": "2026-06-24",
-    "activity": "IT Support Training - Green Retail",
-    "client": "Green Retail",
-    "project": "GreenRetail IT Training",
-    "technician": "Denni Alwin",
-    "items_used": [],
-    "description": "Conducted IT support training for the employees at Green Retail.",
-    "status": "completed",
-    "hours": 3
-  },
-  {
-    "id": "act-ff55a60c",
-    "date": "2026-06-24",
-    "activity": "Security Camera Review - Metro Bank",
-    "client": "Metro Bank",
-    "project": "MetroBank Security Review",
-    "technician": "Denni Alwin",
-    "items_used": [
-      "HIK-DS-7208HUHI-K2"
-    ],
-    "description": "Reviewed and updated the security cameras for Metro Bank.",
-    "status": "completed",
-    "hours": 5
-  },
-  {
-    "id": "act-b4f2060c",
-    "date": "2026-06-24",
-    "activity": "Server Migration - Tech Hub",
-    "client": "Tech Hub",
-    "project": "TechHub Infrastructure Migration",
-    "technician": "Denni Alwin",
-    "items_used": [
-      "SRV-DELL-R340"
-    ],
-    "description": "Migrated the servers from old to new infrastructure for Tech Hub.",
-    "status": "completed",
-    "hours": 10
-  },
-  {
-    "id": "act-74ee667b",
-    "date": "2026-06-24",
-    "activity": "Network Overhaul Phase 2 - XYZ Corp",
-    "client": "XYZ Corp",
-    "project": "XYZCorp Network Overhaul",
-    "technician": "Denni Alwin",
-    "items_used": [
-      "NET-SW-24P",
-      "TPLINK-TL-SF1009P"
-    ],
-    "description": "Completed the network overhaul phase 2 for XYZ Corp.",
-    "status": "completed",
-    "hours": 8
-  },
-  {
-    "id": "act-5017b681",
-    "date": "2026-06-20",
-    "activity": "CCTV Installation",
-    "client": "ABC Industries",
-    "project": "Security Upgrade 2026",
-    "technician": "Denni Alwin",
-    "items_used": [
-      "HIK-DS-2CD2143G2-I",
-      "CAB-CAT6-100M"
-    ],
-    "description": "Installed 4 CCTV cameras covering main entrance, parking lot, warehouse, and server room. Laid 180m of CAT6 cable.",
-    "status": "completed",
-    "hours": 6
-  },
-  {
-    "id": "act-e747b636",
-    "date": "2026-06-24",
-    "activity": "CCTV Installation",
-    "client": "Hilltop Hotel",
+    "activity": "Sold Acer Monitor",
+    "client": "ShipFactory HQ",
     "project": "",
     "technician": "Denni Alwin",
     "items_used": [
-      "HIK-DS-2CD2143G2-I"
+      "MONITOR-ACER"
     ],
-    "description": "Installed 12 Hikvision 4MP IP Cameras at Hilltop Hotel in Chennai. Cameras are part of the ongoing Network Overhaul Phase 2 - XYZ Corp project.",
+    "description": "Sold one Acer monitor for ShipFactory HQ today.",
     "status": "completed",
-    "hours": 8
+    "hours": 1
   },
   {
-    "id": "act-a9b43112",
-    "date": "2026-06-23",
-    "activity": "CCTV",
-    "client": "zoho",
-    "project": "Zoho cctv installation",
-    "technician": "Denni Alwin",
-    "items_used": [],
-    "description": "Installed 12 cameras around campus",
-    "status": "completed",
-    "hours": 12
-  },
-  {
-    "id": "act-001",
-    "date": "2026-06-20",
-    "activity": "CCTV Installation",
-    "client": "ABC Industries",
-    "project": "Security Upgrade 2026",
+    "id": "act-840c2b71",
+    "date": "2026-06-24",
+    "activity": "Inventory Check",
+    "client": "ShipFactory HQ",
+    "project": "",
     "technician": "Denni Alwin",
     "items_used": [
       "HIK-DS-2CD2143G2-I",
-      "CAB-CAT6-100M",
-      "NET-SW-24P"
+      "MONITOR-ACER",
+      "MOUSE-USB"
     ],
-    "description": "Installed 4 CCTV cameras covering main entrance, parking lot, warehouse, and server room. Laid 180m of CAT6 cable.",
+    "description": "",
     "status": "completed",
-    "hours": 6
+    "hours": 0
   },
   {
-    "id": "act-002",
-    "date": "2026-06-18",
-    "activity": "Network Setup",
-    "client": "XYZ Corp",
-    "project": "Network Overhaul Phase 1",
+    "id": "act-48ecbd9d",
+    "date": "2023-06-29",
+    "activity": "Inventory Check",
+    "client": "",
+    "project": "",
     "technician": "Denni Alwin",
-    "items_used": [
-      "NET-SW-24P",
-      "TPLINK-TL-SF1009P",
-      "CAB-CAT6-100M"
-    ],
-    "description": "Configured new 24-port switch and POE switches. Established VLAN segmentation for office and guest networks.",
+    "items_used": [],
+    "description": "Review of current inventory levels",
     "status": "completed",
-    "hours": 8
+    "hours": 1
   },
   {
-    "id": "act-003",
-    "date": "2026-06-15",
-    "activity": "Server Maintenance",
-    "client": "Tech Hub",
-    "project": "Server Infrastructure 2026",
+    "id": "act-c5b08751",
+    "date": "2026-06-25",
+    "activity": "CCTV Installation",
+    "client": "ShipFactory HQ",
+    "project": "",
     "technician": "Denni Alwin",
     "items_used": [
-      "SRV-DELL-R340",
-      "UPS-APC-2KVA"
+      "HIK-DS-2CD2143G2-I",
+      "CAB-CAMERA-100M"
     ],
-    "description": "Replaced failing hard drives, updated firmware, and replaced UPS batteries. Server downtime: 2 hours.",
+    "description": "Installed 4 Hikvision 4MP IP cameras at main entrance, server room, parking, and reception. Ran 80m of CAT6 cable.",
     "status": "completed",
     "hours": 5
   },
   {
-    "id": "act-004",
-    "date": "2026-06-12",
-    "activity": "Router Configuration",
-    "client": "City Office",
-    "project": "IT Infrastructure Setup",
+    "id": "act-d50ac147",
+    "date": "2026-06-24",
+    "activity": "Network Switch Setup at ShipFactory Warehouse",
+    "client": "ShipFactory HQ",
+    "project": "Office Security Setup",
     "technician": "Denni Alwin",
     "items_used": [
-      "CISCO-C1100-4P",
+      "NSW-1000-10G"
+    ],
+    "description": "Setup network switches in the office and warehouse to support security system.",
+    "status": "completed",
+    "hours": 8
+  },
+  {
+    "id": "act-6ceaa13d",
+    "date": "2026-06-24",
+    "activity": "CCTV Installation",
+    "client": "ShipFactory HQ",
+    "project": "Office Security Setup",
+    "technician": "Denni Alwin",
+    "items_used": [
+      "HIK-DS-2CD2143G2-I",
       "CAB-CAT6-100M"
     ],
-    "description": "Configured Cisco router with QoS policies, VPN setup, and firewall rules for city office network.",
+    "description": "Installed 4 Hikvision 4MP IP cameras at main entrance, server room, parking, and reception. Ran 80m of CAT6 cable.",
     "status": "completed",
-    "hours": 4
+    "hours": 5
   },
   {
-    "id": "act-005",
-    "date": "2026-06-10",
-    "activity": "Firewall Setup",
-    "client": "Metro Bank",
-    "project": "Security Hardening 2026",
+    "id": "act-d682f1f9",
+    "date": "2026-06-24",
+    "activity": "CCTV Installation",
+    "client": "ShipFactory HQ",
+    "project": "Office Security Setup",
     "technician": "Denni Alwin",
     "items_used": [
-      "CISCO-C1100-4P"
+      "HIK-DS-2CD2143G2-I",
+      "CAB-CAT6-100M"
     ],
-    "description": "Deployed and configured next-gen firewall. Set up intrusion detection, content filtering, and VPN tunnels.",
+    "description": "Installed 4 Hikvision 4MP IP cameras at main entrance, server room, parking, and reception. Ran 80m of CAT6 cable.",
     "status": "completed",
-    "hours": 7
+    "hours": 5
   },
   {
-    "id": "act-006",
-    "date": "2026-06-08",
-    "activity": "CCTV System Check",
-    "client": "ABC Industries",
-    "project": "Security Upgrade 2026",
+    "id": "act-70805a8d",
+    "date": "2026-06-24",
+    "activity": "CCTV Installation",
+    "client": "ShipFactory HQ",
+    "project": "Office Security Setup",
+    "technician": "Denni Alwin",
+    "items_used": [
+      "HIK-DS-2CD2143G2-I",
+      "CAB-CAT6-100M"
+    ],
+    "description": "Installed 4 Hikvision 4MP IP cameras at main entrance, server room, parking, and reception. Ran 80m of CAT6 cable.",
+    "status": "completed",
+    "hours": 5
+  },
+  {
+    "id": "act-5ba71f67",
+    "date": "2026-06-24",
+    "activity": "Network Switch Setup at ShipFactory Warehouse",
+    "client": "ShipFactory HQ",
+    "project": "Office Security Setup",
+    "technician": "Denni Alwin",
+    "items_used": [
+      "HIK-DS-2CD2143G2-I",
+      "CAB-CAT6-100M"
+    ],
+    "description": "",
+    "status": "completed",
+    "hours": 5
+  },
+  {
+    "id": "act-d1c653c0",
+    "date": "2026-06-24",
+    "activity": "CCTV Installation",
+    "client": "ShipFactory HQ",
+    "project": "Office Security Setup",
+    "technician": "Denni Alwin",
+    "items_used": [
+      "HIK-DS-2CD2143G2-I",
+      "CAB-CAT6-100M"
+    ],
+    "description": "Installed 4 Hikvision 4MP IP cameras at main entrance, server room, parking, and reception. Ran 80m of CAT6 cable.",
+    "status": "completed",
+    "hours": 5
+  },
+  {
+    "id": "act-ad18c82d",
+    "date": "2026-06-24",
+    "activity": "Network Switch Setup at ShipFactory Warehouse",
+    "client": "ShipFactory HQ",
+    "project": "Office Security Setup",
     "technician": "Denni Alwin",
     "items_used": [],
-    "description": "Quarterly inspection of CCTV system. Cleaned camera lenses, checked cable connections, verified NVR storage.",
+    "description": "",
     "status": "completed",
-    "hours": 3
+    "hours": 8
   },
   {
-    "id": "act-007",
-    "date": "2026-06-05",
-    "activity": "Network Audit",
-    "client": "XYZ Corp",
-    "project": "Network Overhaul Phase 1",
+    "id": "act-00000001",
+    "date": "2026-06-24",
+    "activity": "CCTV Installation",
+    "client": "ShipFactory HQ",
+    "project": "Office Security Setup",
     "technician": "Denni Alwin",
     "items_used": [
-      "TOOL-NCT-01"
-    ],
-    "description": "Conducted full network audit. Identified 3 legacy switches causing bottlenecks and recommended replacement.",
-    "status": "completed",
-    "hours": 6
-  },
-  {
-    "id": "act-008",
-    "date": "2026-06-03",
-    "activity": "Printer Network Setup",
-    "client": "Green Retail",
-    "project": "Office IT Setup",
-    "technician": "Denni Alwin",
-    "items_used": [
-      "WAP-UBIQ-U6",
-      "CAB-CAT7-50M"
-    ],
-    "description": "Set up wireless network for 12 printers and configured print server. Installed new WAP for better coverage.",
-    "status": "completed",
-    "hours": 4
-  },
-  {
-    "id": "act-009",
-    "date": "2026-06-01",
-    "activity": "Cable Management",
-    "client": "DataCenter Pro",
-    "project": "DataCenter Cleanup",
-    "technician": "Denni Alwin",
-    "items_used": [
-      "CAB-CAT6-100M",
-      "CAB-CAT7-50M",
-      "CON-RJ45-100"
-    ],
-    "description": "Full cable management of server room. Labeled all cables, replaced damaged runs, installed cable trays.",
-    "status": "completed",
-    "hours": 9
-  },
-  {
-    "id": "act-010",
-    "date": "2026-05-28",
-    "activity": "WiFi Expansion",
-    "client": "Smart Logistics",
-    "project": "Warehouse Connectivity",
-    "technician": "Denni Alwin",
-    "items_used": [
-      "WAP-UBIQ-U6",
-      "NET-SW-24P",
+      "HIK-DS-2CD2143G2-I",
       "CAB-CAT6-100M"
     ],
-    "description": "Deployed 6 access points across 3000sqm warehouse. Achieved full coverage with roaming support.",
+    "description": "Installed 4 Hikvision 4MP IP cameras at main entrance, server room, parking, and reception. Ran 80m of CAT6 cable.",
     "status": "completed",
-    "hours": 7
+    "hours": 5
   }
 ]

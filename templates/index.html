@@ -113,10 +113,32 @@ td{padding:12px 16px;font-size:13px;vertical-align:middle}
 .btn-danger:hover{background:rgba(255,91,91,.2)}
 .btn-sm{padding:5px 10px;font-size:12px}
 
+/* ── Action Cards (in chat) ──────────────────────────────── */
+.action-card{align-self:flex-start;max-width:88%;background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;overflow:hidden;animation:cardIn .25s ease}
+@keyframes cardIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.ac-header{display:flex;align-items:center;gap:10px;padding:10px 14px 8px}
+.ac-tick{width:22px;height:22px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ac-tick svg{width:12px;height:12px;stroke:#16181E;stroke-width:2.5;fill:none}
+.ac-title{font-size:13px;font-weight:700;color:var(--accent)}
+.action-card.duplicate{border-left-color:var(--yellow)}
+.action-card.duplicate .ac-tick{background:var(--yellow)}
+.action-card.duplicate .ac-title{color:var(--yellow)}
+.ac-badge{margin-left:auto;font-size:10px;font-family:var(--mono);padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.4px}
+.ac-badge.inventory{background:rgba(96,165,250,.12);color:var(--blue)}
+.ac-badge.task{background:rgba(245,197,24,.12);color:var(--yellow)}
+.ac-badge.activity{background:rgba(74,222,128,.12);color:var(--green)}
+.ac-badge.general{background:var(--surface3);color:var(--text2)}
+.ac-rows{padding:0 14px 10px;display:flex;flex-direction:column;gap:3px}
+.ac-row{display:flex;align-items:flex-start;gap:7px;font-size:12.5px;color:var(--text2);padding:4px 0;border-top:1px solid var(--border)}
+.ac-row:first-child{border-top:none}
+.ac-row-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:6px}
+.ac-row.error .ac-row-dot{background:var(--red)}
+.ac-row.error{color:var(--red)}
+
 /* ── Chat View ───────────────────────────────────────────── */
 .chat-layout{display:grid;grid-template-columns:1fr 340px;gap:20px;height:calc(100vh - 140px)}
 .chat-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column;overflow:hidden}
-.chat-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px}
+.chat-messages{flex:1;min-height:0;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px}
 .chat-messages::-webkit-scrollbar{width:4px}
 .chat-messages::-webkit-scrollbar-track{background:transparent}
 .chat-messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
@@ -233,6 +255,20 @@ td{padding:12px 16px;font-size:13px;vertical-align:middle}
 .toast.show{transform:translateY(0);opacity:1}
 .toast.success{border-left:3px solid var(--green)}
 .toast.error{border-left:3px solid var(--red)}
+
+/* ── Stock Alert ─────────────────────────────────────────── */
+.stock-alert{position:fixed;bottom:24px;left:24px;background:var(--surface);border:1px solid rgba(255,91,91,.3);border-left:3px solid var(--red);border-radius:12px;padding:14px 16px;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:300;transform:translateY(120px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);max-width:300px;min-width:260px}
+.stock-alert.show{transform:translateY(0);opacity:1}
+.sa-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.sa-icon{width:26px;height:26px;border-radius:7px;background:rgba(255,91,91,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sa-title{font-size:13px;font-weight:700;color:var(--red);flex:1}
+.sa-close{background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer;padding:2px 5px;line-height:1;border-radius:4px}
+.sa-close:hover{color:var(--text);background:var(--surface2)}
+.sa-sub{font-size:11.5px;color:var(--text2);margin-bottom:8px}
+.sa-items{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.sa-item{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:7px}
+.sa-dot{width:4px;height:4px;border-radius:50%;background:var(--red);flex-shrink:0}
+.sa-footer{display:flex;gap:6px}
 
 /* ── Scrollbar ───────────────────────────────────────────── */
 ::-webkit-scrollbar{width:5px;height:5px}
@@ -590,11 +626,29 @@ td{padding:12px 16px;font-size:13px;vertical-align:middle}
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<!-- STOCK ALERT (once per session) -->
+<div id="stockAlert" class="stock-alert">
+  <div class="sa-header">
+    <div class="sa-icon">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="var(--red)" stroke-width="2"><path d="M8 2L14 13H2L8 2Z"/><line x1="8" y1="6.5" x2="8" y2="9.5"/><circle cx="8" cy="11.5" r=".6" fill="var(--red)" stroke="none"/></svg>
+    </div>
+    <div class="sa-title">Stock Alert</div>
+    <button class="sa-close" onclick="dismissStockAlert()">✕</button>
+  </div>
+  <div id="saCount" class="sa-sub"></div>
+  <div id="saItems" class="sa-items"></div>
+  <div class="sa-footer">
+    <button class="btn btn-danger btn-sm" onclick="showView('inventory');dismissStockAlert()" style="flex:1;font-size:11.5px">View Inventory</button>
+    <button class="btn btn-ghost btn-sm" onclick="dismissStockAlert()" style="font-size:11.5px">Dismiss</button>
+  </div>
+</div>
+
 <script>
 // ── State ────────────────────────────────────────────────────
 let allActivities = [], allTasks = [], allInventory = [], statsData = {};
 let chatHistory = [], currentFilter = 'all';
 let pendingWorkEntry = null;
+let _stockAlertTimer = null;
 
 // ── Init ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
@@ -604,6 +658,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadAll() {
   await Promise.all([loadStats(), loadActivities(), loadTasks(), loadInventory()]);
+  if (!sessionStorage.getItem('stockAlertShown')) {
+    const critical = allInventory.filter(i => ['critical','out_of_stock','low_stock'].includes(i.status));
+    if (critical.length > 0) {
+      sessionStorage.setItem('stockAlertShown', '1');
+      setTimeout(() => showStockAlert(critical), 1400);
+    }
+  }
+}
+
+// ── Stock Alert ───────────────────────────────────────────────
+function showStockAlert(items) {
+  document.getElementById('saCount').textContent =
+    `${items.length} item${items.length !== 1 ? 's' : ''} need restocking`;
+  document.getElementById('saItems').innerHTML = items.slice(0, 4).map(i =>
+    `<div class="sa-item"><div class="sa-dot"></div>${i.name} — ${i.stock} ${i.unit || 'pcs'} left</div>`
+  ).join('') + (items.length > 4
+    ? `<div class="sa-item" style="color:var(--text3)">+${items.length - 4} more items</div>` : '');
+  document.getElementById('stockAlert').classList.add('show');
+  _stockAlertTimer = setTimeout(dismissStockAlert, 12000);
+}
+
+function dismissStockAlert() {
+  clearTimeout(_stockAlertTimer);
+  document.getElementById('stockAlert').classList.remove('show');
 }
 
 // ── Navigation ────────────────────────────────────────────────
@@ -1011,8 +1089,10 @@ async function sendChat() {
         if (data === '[DONE]') break;
         try {
           const parsed = JSON.parse(data);
-          if (parsed.refresh) {
-            loadAll(); // AI used a tool and modified data — reload everything
+          if (parsed.card) {
+            appendActionCard(parsed.card);
+          } else if (parsed.refresh) {
+            loadAll();
           } else if (parsed.text) {
             fullText += parsed.text;
             updateMessage(typingId, fullText);
@@ -1068,6 +1148,32 @@ function appendMessage(role, html, id = null) {
   div.className = `msg msg-${role}`;
   if (id) div.id = id;
   div.innerHTML = `<div class="msg-avatar">${role === 'ai' ? 'K' : 'DA'}</div><div class="msg-bubble">${html}</div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function appendActionCard(card) {
+  const container = document.getElementById('chatMessages');
+  const isDuplicate = card.title === 'Already Exists';
+  const typeLabel = {inventory: 'Inventory', task: 'Task', activity: 'Activity', general: 'System'}[card.type] || 'System';
+  const rows = (card.rows || []).map(r =>
+    `<div class="ac-row"><div class="ac-row-dot"></div><span>${r}</span></div>`
+  ).join('');
+  const errors = (card.errors || []).map(r =>
+    `<div class="ac-row error"><div class="ac-row-dot"></div><span>${r}</span></div>`
+  ).join('');
+  const tickIcon = isDuplicate
+    ? `<svg viewBox="0 0 12 12"><line x1="2" y1="2" x2="10" y2="10" stroke="#16181E" stroke-width="2.5"/><line x1="10" y1="2" x2="2" y2="10" stroke="#16181E" stroke-width="2.5"/></svg>`
+    : `<svg viewBox="0 0 12 12"><polyline points="1.5,6 5,9.5 10.5,2.5"/></svg>`;
+  const div = document.createElement('div');
+  div.className = 'action-card' + (isDuplicate ? ' duplicate' : '');
+  div.innerHTML = `
+    <div class="ac-header">
+      <div class="ac-tick">${tickIcon}</div>
+      <div class="ac-title">${card.title}</div>
+      <div class="ac-badge ${card.type}">${typeLabel}</div>
+    </div>
+    <div class="ac-rows">${rows}${errors}</div>`;
   container.appendChild(div);
   container.scrollTop = container.scrollHeight;
 }

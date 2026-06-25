@@ -8,20 +8,32 @@ OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen2.5")
 
 REFRESH_SENTINEL = "\x00REFRESH\x00"
 
-SYSTEM_PROMPT = """You are Kroniq, an AI business operations assistant for ShipFactory — an IT services and infrastructure company.
+SYSTEM_PROMPT = """You are Kroniq, an AI business memory OS developed by ShipFactory. You help businesses manage their tasks, track inventory, and log work activities — acting as their business memory.
 
-You have tools to directly read and write data. When the user asks you to add, create, update, or modify anything — call the appropriate tool immediately and then confirm what you did.
+STRICT TOOL SELECTION RULES:
 
-Tools available:
-- create_task: create a new task or work order
-- update_task_status: change a task status by its ID (pending/in_progress/completed)
-- log_activity: log a completed work activity or job
-- update_inventory_stock: update stock quantity by SKU
-- add_inventory_item: add a new item to inventory
+ONLY call a tool when the user is EXPLICITLY asking you to create, update, or log something right now.
+DO NOT call any tool for: questions, greetings, date/time queries, status checks, or anything that is not a direct instruction to take action.
 
-The user message will include a [System Data] section with current task IDs and inventory SKUs — use those exact values when calling update tools.
+TASK vs ACTIVITY — this is the most important distinction:
+- FUTURE work / planned jobs / "need to do", "have to", "schedule", "tomorrow", "next week", "going to" → call create_task. These are NOT activities yet.
+- PAST / COMPLETED work / "we did", "we installed", "we finished", "today we", "yesterday", "just done", "completed" → call log_activity. These are records of work already done.
+- Updating an existing task's status → call update_task_status ONLY.
 
-Current date: 2026-06-24"""
+INVENTORY — never confuse with tasks or activities:
+- User lists products or quantities (e.g. "camera = 5", "we have X units of Y") → call add_inventory_item or update_inventory_stock ONLY.
+
+These categories are mutually exclusive. Never mix them for one message.
+If the user just asks a question (even about tasks or inventory), answer it in text — do NOT call any tool.
+
+RESPONSE RULES:
+- Never output raw JSON, function names, argument names, or tool syntax in your reply.
+- After tools run, reply in one or two plain English sentences confirming what was done.
+- Today's date is in [System Data] — use it when the user asks about dates or when defaulting dates in tool calls.
+- Good example: "Done! I've added all 5 items to your inventory."
+- Bad example: {"name": "add_inventory_item", ...} or "[Calling update_task_status]"
+
+[System Data] in the user message contains today's date, current IDs and SKUs — use those exact values in tool calls."""
 
 TOOLS = [
     {
@@ -228,17 +240,21 @@ class KroniqRAG:
             for doc in context_docs:
                 rag_ctx += f"• {doc['text']}\n"
 
+        user_content = message + rag_ctx + data_context
+
         # Build conversation
         messages = [{"role": "system", "content": SYSTEM_PROMPT}]
         for h in history[-8:]:
             messages.append({"role": h["role"], "content": h["content"]})
-        messages.append({"role": "user", "content": message + rag_ctx + data_context})
+        messages.append({"role": "user", "content": user_content})
+
+        active_tools = TOOLS if tool_executor else []
 
         # Stage 1: non-streaming call — detects whether the model wants to use tools
         response = self.llm.chat(
             model=self.model,
             messages=messages,
-            tools=TOOLS if tool_executor else [],
+            tools=active_tools,
         )
 
         msg = response.message
@@ -254,9 +270,17 @@ class KroniqRAG:
             messages.append(assistant_entry)
 
             # Execute each tool and collect results
+            import json as _json
+            tool_results = []
             for tc in tool_calls:
                 result = tool_executor(tc.function.name, tc.function.arguments)
+                tool_results.append(_json.loads(result))
                 messages.append({"role": "tool", "content": result})
+
+            # If all tools flagged duplicates, skip Stage 2 — app.py generates the message
+            if tool_results and all(r.get("duplicate") for r in tool_results):
+                yield REFRESH_SENTINEL
+                return
 
             # Stage 2: stream the final confirmation response
             stream = self.llm.chat(model=self.model, messages=messages, stream=True)
